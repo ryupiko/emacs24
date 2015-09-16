@@ -1,0 +1,97 @@
+mkdir -p /data/db
+mkdir /data/db
+mkdir ~/data/db
+mkdir ./data/db
+mkdir -p ./data/db
+mkdir ./data
+cd data
+mkdir /db
+mkdir ./db
+cd ../
+./bin/mongo
+./bin/mongod
+./bin/mongod
+cd C:\Program Files\MongoDB 2.6 Standard
+cd C:/Program Files/MongoDB 2.6 Standard
+cd c:/Program Files/MongoDB 2.6 Standard
+cd ../
+cd ../
+cd program files
+cd Program Files
+dir
+dirs
+cd
+cd C:/Program Files/MongoDB 2.6 Standard
+dir
+dired
+cd
+cd Program Files
+cd program_files
+exit
+cd ../
+cd ../
+cd mongodb
+cd bin
+dirs
+mongo
+mongo.exe
+mongo
+./mongo
+./mongod
+./mongo
+cd c:/mongodb/bin
+mongo
+./mongo
+./mongod
+cd /d /d
+cd -d /d
+cd /d
+dirs
+pwd
+cd \d
+cd \d \d
+pushf /d
+pushd /d
+mount
+cd /d /d/git
+cd /d d:\git
+mount
+command
+linux
+linux command
+cywng
+command
+linux
+cd
+dirs
+mount 
+cd /d /d
+dir
+dirs
+cd /d /d
+cd -p /d
+cd /d
+cd /d /d
+popd
+pushd
+pushd /d
+pushd /d /d 
+bath
+pwd
+cd ^
+cd -
+pwd
+cd ..
+cd ..
+cd ..
+cd ..
+cd ..
+help
+man
+which
+whereis
+vmstat
+cd
+dir
+dir
+exit
