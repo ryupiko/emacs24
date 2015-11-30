@@ -203,6 +203,7 @@ If POS is nil, the location of point is checked."
 	(memq (char-after pos) eshell-delimiter-argument-list))))
 
 (defun eshell-quote-argument (string)
+
   "Return STRING with magic characters quoted.
 Magic characters are those in `eshell-special-chars-outside-quoting'."
   (let ((index 0))

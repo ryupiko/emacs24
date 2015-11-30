@@ -2612,6 +2612,7 @@ Note: :data and :device are currently not supported on Windows."
 (declare-function w32-shell-dos-semantics "w32-fns" nil)
 
 (defun shell-quote-argument (argument)
+
   "Quote ARGUMENT for passing as argument to an inferior shell."
   (cond
    ((eq system-type 'ms-dos)
@@ -2662,6 +2663,7 @@ Note: :data and :device are currently not supported on Windows."
       (concat "\"" argument "\"")))
 
    (t
+
     (if (equal argument "")
         "''"
       ;; Quote everything except POSIX filename characters.

@@ -3,7 +3,23 @@
 (prefer-coding-system 'utf-8)
 (setq default-file-name-coding-system 'shift_jis) ;dired用
 
+(show-paren-mode t)
 ;;(prefer-coding-system 'cp932)
+
+;;;ロードパス
+(setq load-path
+      (append (list nil "~/.emacs.d/elisp"
+                    "~/.emacs.d/elisp/auto-install"
+                    "~/.emacs.d/elisp/pgm"
+                    "~/.emacs.d/elisp/tool"
+                    "~/.emacs.d/elisp/sql"
+                    "~/.emacs.d/elisp/magit"
+                    "~/.emacs.d/elisp/rinari-master"
+                    "~/.emacs.d/elisp/rinari-master/util"
+                    "~/.emacs.d/elisp/rspec-mode-master"
+                    "~/.emacs.d/elisp/yasnippet"
+                    "~/.emacs.d/elisp/helm")
+              load-path))
 
 ;; enable-BackSpace
 (load "term/bobcat")
@@ -35,16 +51,72 @@
 
 (setq inhibit-startup-screen t)
 
+;;; proxy
+(setq url-proxy-services
+      '(("http" . "129.0.250.2:80")
+        ("https" . "129.0.250.2:80"))
+)
 
+(setq url-http-proxy-basic-auth-storage
+      (list (list "129.0.250.2:80" 
+                  (cons "/"
+                        (base64-encode-string "05933:monakA01"))))
+)
 
+;;; yasnippet
+(require 'yasnippet)
+(setq yas-snippet-dirs
+      '("~/.emacs.d/mysnippets" 
+        "~/.emacs.d/snippets"
+        ))
+(yas-global-mode 1)
 
+;; 既存スニペットを挿入する
+(define-key yas-minor-mode-map (kbd "C-c yi ") 'yas-insert-snippet)
+;; 新規スニペットを作成するバッファを用意する
+(define-key yas-minor-mode-map (kbd "C-c yn ") 'yas-new-snippet)
+;; 既存スニペットを閲覧・編集する
+(define-key yas-minor-mode-map (kbd "C-c yv ") 'yas-visit-snippet-file)
+
+;;; grep
+   (when (or (eq system-type 'windows-nt) (eq system-type 'msdos))
+      (setenv "Path" (concat "C:\\GnuWin32\\bin;" (getenv "Path")))
+      (setq find-program "C:\\GnuWin32\\bin\\find.exe"
+            grep-program "C:\\GnuWin32\\bin\\grep.exe"))
+
+(require 'grep) 
+(add-to-list 'grep-find-ignored-directories ".exe")
+(add-to-list 'grep-find-ignored-directories ".git") 
+
+;; emacswikiに追加するようにと書いてあるが、rspecの実行時にコマンドに「\」が混入してしまうので削除
+;;   (defadvice shell-quote-argument (after windows-nt-special-quote (argument) activate)
+;;     "Add special quotes to ARGUMENT in case the system type is 'windows-nt."
+;;     (when
+;;         (and (eq system-type 'windows-nt) (w32-shell-dos-semantics))
+;;       (if (string-match "[\\.~]" ad-return-value)
+;;           (setq ad-return-value
+;;            (replace-regexp-in-string
+;;             "\\([\\.~]\\)"
+;;             "\\\\\\1"
+;;             ad-return-value)))))
+
+;; shell-quote-argumentの問題回避
+;;;(defvar quote-argument-for-windows-p t "enables `shell-quote-argument' workaround for windows.")
+;;;(defadvice shell-quote-argument (around shell-quote-argument-for-win activate)
+;;;"workaround for windows."
+;;;(if quote-argument-for-windows-p
+;;;(let ((argument (ad-get-arg 0)))
+;;;(setq argument (replace-regexp-in-string "\\\\" "\\\\" argument nil t))
+;;;(setq argument (replace-regexp-in-string "'" "'\\''" argument nil t))
+;;;(setq ad-return-value (concat "'" argument "'")))
+;;;ad-do-it)) 
 
 ;; ;;; setting shell  
 
 ;; ;;; Cygwin の bash を使う場合
-(setq explicit-shell-file-name "bash.exe")
-(setq shell-file-name "sh.exe")
-(setq shell-command-switch "-c") 
+;;(setq explicit-shell-file-name "bash.exe")
+;;(setq shell-file-name "sh.exe")
+;;(setq shell-command-switch "-c") 
 
 ;; shell のコマンドの後に ^M が付加されてしまう問題の解決 
 (modify-coding-system-alist 'process ".*sh\\.exe" '(undecided-dos . undecided-unix))
@@ -136,16 +208,6 @@
 ;;;         ELISP
 ;;;************************
 
-;;;ロードパス
-(setq load-path
-      (append (list nil "~/.emacs.d/elisp"
-                    "~/.emacs.d/elisp/auto-install"
-                    "~/.emacs.d/elisp/pgm"
-                    "~/.emacs.d/elisp/tool"
-                    "~/.emacs.d/elisp/sql"
-                    "~/.emacs.d/elisp/magit"
-                    "~/.emacs.d/elisp/helm")
-              load-path))
 
 ;;;; COBOL-MODE
 (setq auto-mode-alist (append auto-mode-alist
@@ -188,12 +250,47 @@
  ;;; If there is more than one, they won't work right.
  )
 
+;;; パッケージの取得先を追加
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(package-initialize)
+
 ;;; helm
 (when (require 'helm-config nil t)
   (helm-mode 1)
   (define-key helm-map (kbd "C-h") 'delete-backward-char)
   (define-key helm-find-files-map (kbd "C-h") 'delete-backward-char)
 )
+
+;;; rails rinari
+(require 'rinari)
+(add-hook 'ruby-mode-hook
+          (lambda () (rinari-launch)))
+(add-hook 'web-mode-hook
+          (lambda () (rinari-launch)))
+(add-hook 'rspec-mode-hook
+          (lambda () (rinari-launch)))
+
+;;; rspec-mode
+(require 'rspec-mode)
+(eval-after-load 'rspec-mode
+  '(rspec-install-snippets))
+(custom-set-variables '(rspec-use-rake-flag nil))
+(custom-set-faces)
+
+;;;(require 'rvm)
+;;;(rvm-use-default)
+;;;(defadvice ruby-compilation-do (before set-ruby-by-rvm (name cmdlist))
+;;;　 "set ruby by rvm"
+;;;　 (rvm-activate-corresponding-ruby))
+;;;(ad-activate 'ruby-compilation-do)
+
+;;; rhtml-mode
+;;;(require 'rhtml-mode)
+;;;(add-hook 'rhtml-mode-hook
+;;;          (lambda () (rinari-launch))
+;;;)
 
 ;;;
 ;;; end of file
